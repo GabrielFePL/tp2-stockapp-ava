@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using StockApp.Application.DTOs;
 using StockApp.Application.Interfaces;
+using StockApp.Application.Services;
 
 namespace StockApp.API.Controllers
 {
@@ -76,6 +77,17 @@ namespace StockApp.API.Controllers
 
             await _productService.Remove(id);
 
+            return Ok(produtoDto);
+        }
+
+        [HttpGet("lowstock", Name = "GetLowStockProducts")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetLowStockProducts(int limiteEstoque)
+        {
+            var produtoDto = await _productService.EstoqueBaixo(limiteEstoque);
+            if (produtoDto == null)
+            {
+                return NotFound("Products not found");
+            }
             return Ok(produtoDto);
         }
     }
