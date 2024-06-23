@@ -4,6 +4,8 @@ using StockApp.Application.Interfaces;
 
 namespace StockApp.API.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class ProductsController : Controller
     {
         private readonly IProductService _productService;
@@ -33,6 +35,17 @@ namespace StockApp.API.Controllers
             }
             return Ok(produto);
         }
+        
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] ProductDTO produtoDto)
+        {
+            if (produtoDto == null)
+                return BadRequest("Data Invalid");
 
+            await _productService.Add(produtoDto);
+
+            return new CreatedAtRouteResult("GetProduct",
+                new { id = produtoDto.Id }, produtoDto);
+        }
     }
 }
