@@ -1,37 +1,38 @@
-using StockApp.API.Middleware;
 using StockApp.Infra.IoC;
 
-internal class Program
+var builder = WebApplication.CreateBuilder(args);
+
+// Add services to the container.
+builder.Services.AddInfrastructureAPI(builder.Configuration);
+//ativar autenticacao e validar o token
+
+builder.Services.AddStackExchangeRedisCache(options =>
 {
-    private static void Main(string[] args)
-    {
-        var builder = WebApplication.CreateBuilder(args);
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "StockApp:";
+});
 
-        // Add services to the container.
-        builder.Services.AddInfrastructureAPI(builder.Configuration);
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
-        builder.Services.AddControllers();
+var app = builder.Build();
 
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-
-        var app = builder.Build();
-
-        // Configure the HTTP request pipeline.
-        if (app.Environment.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
-
-        app.UseErrorHandlerMiddleware();
-
-        app.UseRouting();
-        app.UseHttpsRedirection();
-        app.UseAuthorization();
-
-        app.MapControllers();
-
-        app.Run();
-    }
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
 }
+
+app.UseHttpsRedirection();
+
+app.UseStatusCodePages();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
