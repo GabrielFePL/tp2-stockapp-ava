@@ -4,6 +4,8 @@ using StockApp.Application.Interfaces;
 using StockApp.Application.Services;
 using StockApp.Domain.Entities;
 using StockApp.Infra.Data.Repositories;
+using System.Linq;
+using System.Text;
 
 namespace StockApp.API.Controllers
 {
@@ -104,6 +106,26 @@ namespace StockApp.API.Controllers
             await _productService.BulkUpdateAsync(produtosDto);
 
             return Ok(produtosDto);
+        }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportToCsv()
+        {
+            var produtosDto = await _productService.GetProducts();
+            if (produtosDto == null || !produtosDto.Any())
+            {
+                return NotFound("Products not found to export");
+            }
+
+            var csv = new StringBuilder();
+            csv.AppendLine("Id,Name,Description,Price,Stock");
+
+            foreach (var produto in produtosDto)
+            {
+                csv.AppendLine($"{produto.Id},{produto.Name},{produto.Description},{produto.Price},{produto.Stock}");
+            }
+
+            return File(Encoding.UTF8.GetBytes(csv.ToString()), "text/csv", "products.csv");
         }
     }
 }
