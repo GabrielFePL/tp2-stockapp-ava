@@ -1,3 +1,7 @@
+using StockApp.Application.Interfaces;
+using StockApp.Application.Services;
+using StockApp.Domain.Interfaces;
+using StockApp.Infra.Data.Repositories;
 using StockApp.Infra.IoC;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +17,9 @@ builder.Services.AddStackExchangeRedisCache(options =>
 });
 
 builder.Services.AddControllers();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
+builder.Services.AddScoped<IJustInTimeInventoryService, JustInTimeInventoryService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
