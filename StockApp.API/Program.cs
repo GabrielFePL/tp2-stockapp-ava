@@ -6,6 +6,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddInfrastructureAPI(builder.Configuration);
 //ativar autenticacao e validar o token
 
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+    options.InstanceName = "StockApp:";
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
