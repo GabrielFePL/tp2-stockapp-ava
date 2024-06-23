@@ -2,6 +2,8 @@
 using StockApp.Application.DTOs;
 using StockApp.Application.Interfaces;
 using StockApp.Application.Services;
+using StockApp.Domain.Entities;
+using StockApp.Infra.Data.Repositories;
 
 namespace StockApp.API.Controllers
 {
@@ -89,6 +91,19 @@ namespace StockApp.API.Controllers
                 return NotFound("Products not found");
             }
             return Ok(produtoDto);
+        }
+
+        [HttpPut("bulk-update", Name = "BulkUpdateProducts")]
+        public async Task<IActionResult> BulkUpdate([FromBody] List<ProductDTO> produtosDto)
+        {
+            if (produtosDto == null || !produtosDto.Any())
+            {
+                return BadRequest("Product Null or Invalid");
+            };
+
+            await _productService.BulkUpdateAsync(produtosDto);
+
+            return Ok(produtosDto);
         }
     }
 }
