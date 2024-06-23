@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StockApp.API.Models
+namespace StockApp.Application.DTOs
 {
     public class TokenResponseDto
     {

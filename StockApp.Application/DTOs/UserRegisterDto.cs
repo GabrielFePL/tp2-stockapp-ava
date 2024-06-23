@@ -1,10 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace StockApp.API.Models
+namespace StockApp.Application.DTOs
 {
-    public class UserLoginDto
+    public class UserRegisterDto
     {
         public string Username { get; set; }
         public string Password { get; set; }
+        public string Role { get; set; }
     }
 }
