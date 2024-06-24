@@ -4,6 +4,8 @@ using StockApp.Domain.Interfaces;
 using StockApp.Infra.Data.Identity;
 using StockApp.Domain.Entities;
 using StockApp.Application.DTOs;
+using StockApp.API.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace StockApp.Infra.Data.Test
 {
@@ -32,6 +34,33 @@ namespace StockApp.Infra.Data.Test
 
             Assert.NotNull(result);
             Assert.IsType<TokenResponseDto>(result);
+        }
+
+        [Fact]
+        public async Task Login_ValidCredebtials_ReturnsToken()
+        {
+            var authServiceMock = new Mock<IAuthService>();
+            var tokenController = new TokenController(authServiceMock.Object);
+
+            authServiceMock.Setup(auth => auth.AuthenticateAsync(It.IsAny<string>(), It.IsAny<string>()))
+                .ReturnsAsync(new TokenResponseDto
+                {
+                    Token = "token",
+                    Expiration = DateTime.UtcNow.AddMinutes(60)
+                }
+            );
+
+            var userLoginDto = new UserLoginDto
+            {
+                Username = "TestUser",
+                Password = "TestPassword"
+            };
+
+            var result = await tokenController.Login(userLoginDto) as OkObjectResult;
+
+            Assert.NotNull(result);
+            Assert.IsType<OkObjectResult>(result.Value);
+            Assert.Equal(200, result.StatusCode);
         }
     }
 }
