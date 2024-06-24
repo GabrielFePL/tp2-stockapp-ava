@@ -34,7 +34,7 @@ namespace StockApp.Infra.Data.Repositories
 
         public async Task<User> AddAsync(string username, string password)
         {
-            var user = new User { UserName = username };
+            var user = new User { Username = username };
             var result = await _userManager.CreateAsync(user, password);
             if (result.Succeeded)
             {
