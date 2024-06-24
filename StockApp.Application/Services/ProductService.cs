@@ -40,6 +40,11 @@ namespace StockApp.Application.Services
             var productEntity = _productRepository.GetById(id);
             return _mapper.Map<ProductDTO>(productEntity);
         }
+        public async Task<IEnumerable<ProductDTO>> GetFilteredAsync(string name, decimal? minPrice, decimal? maxPrice)
+        {
+            var products = await _productRepository.GetFilteredAsync(name, minPrice, maxPrice);
+            return _mapper.Map<IEnumerable<ProductDTO>>(products);
+        }
 
         public async Task Remove(int? id)
         {
