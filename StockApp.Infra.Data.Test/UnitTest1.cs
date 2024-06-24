@@ -62,5 +62,24 @@ namespace StockApp.Infra.Data.Test
             Assert.IsType<OkObjectResult>(result.Value);
             Assert.Equal(200, result.StatusCode);
         }
+
+        [Fact]
+        public async Task Register_ValidUser_ReturnsOk()
+        {
+            var userRepositoryMock = new Mock<IUserRepository>();
+            var userController = new UserController(userRepositoryMock.Object);
+
+            var userRegisterDto = new UserRegisterDto
+            {
+                Username = "TestUser",
+                Password = "TestPassword",
+                Role = "User"
+            };
+
+            var result = await userController.Register(userRegisterDto) as OkResult;
+
+            Assert.NotNull(result);
+            Assert.Equal(200, result.StatusCode);
+        }
     }
 }
