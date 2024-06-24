@@ -6,14 +6,19 @@ using StockApp.Domain.Entities;
 using StockApp.Infra.Data.Repositories;
 using System.Linq;
 using System.Text;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace StockApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     public class ProductsController : Controller
     {
+
         private readonly IProductService _productService;
+        private readonly IProductComparisonService _productComparisonService;
         public ProductsController(IProductService productService)
         {
             _productService = productService;
@@ -53,7 +58,7 @@ namespace StockApp.API.Controllers
                 new { id = produtoDto.Id }, produtoDto);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:int}", Name = "UpdateProduct")]
         public async Task<ActionResult> Put(int id, [FromBody] ProductDTO produtoDto)
         {
             if (id != produtoDto.Id)
@@ -69,7 +74,7 @@ namespace StockApp.API.Controllers
             return Ok(produtoDto);
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:int}", Name = "DeleteProduct")]
         public async Task<ActionResult<ProductDTO>> Delete(int id)
         {
             var produtoDto = await _productService.GetProductById(id);
@@ -106,6 +111,23 @@ namespace StockApp.API.Controllers
             await _productService.BulkUpdateAsync(produtosDto);
 
             return Ok(produtosDto);
+        }
+        [HttpGet("filter", Name = "FilterProducts")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetFilteredAsync(string name, decimal? minPrice, decimal? maxPrice)
+        {
+            var product = await _productService.GetFilteredAsync(name, minPrice, maxPrice);
+            if (product == null)
+            {
+                return NotFound("Products not found");
+            }
+            return Ok(product);
+        }
+
+        [HttpPost("compare")]
+        public async Task<ActionResult<IEnumerable<ProductDTO>>> CompareProducts([FromBody] List<int> productIds)
+        {
+            var product = await _productComparisonService.CompareProductsAsync(productIds);
+            return Ok(product);
         }
 
         [HttpGet("export")]
