@@ -81,5 +81,8 @@ namespace StockApp.Infra.Data.Test
             Assert.NotNull(result);
             Assert.Equal(200, result.StatusCode);
         }
+
+        [Fact]
+
     }
 }
