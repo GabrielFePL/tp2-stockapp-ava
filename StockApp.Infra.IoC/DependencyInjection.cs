@@ -12,10 +12,6 @@ using StockApp.Infra.Data.EntityConfiguration;
 using StockApp.Infra.Data.Identity;
 using StockApp.Infra.Data.Repositories;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace StockApp.Infra.IoC
 {
@@ -25,8 +21,8 @@ namespace StockApp.Infra.IoC
             IConfiguration configuration)
         {
             services.AddDbContext<ApplicationDbContext>(options =>
-             options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"
-            ), b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
+                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -35,7 +31,11 @@ namespace StockApp.Infra.IoC
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IProductComparisonService, ProductComparisonService>();
             services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IPromotionRepository, PromotionRepository>();
+            services.AddScoped<IPromotionService, PromotionService>();
+            services.AddScoped<IApplyDiscountService, ApplyDiscountService>();
 
             services.AddAutoMapper(typeof(DomainToDTOMappingProfile));
 
