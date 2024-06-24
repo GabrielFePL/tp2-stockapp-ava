@@ -112,16 +112,6 @@ namespace StockApp.API.Controllers
 
             return Ok(produtosDto);
         }
-        [HttpGet("filter", Name = "FilterProducts")]
-        public async Task<ActionResult<IEnumerable<ProductDTO>>> GetFilteredAsync(string name, decimal? minPrice, decimal? maxPrice)
-        {
-            var product = await _productService.GetFilteredAsync(name, minPrice, maxPrice);
-            if (product == null)
-            {
-                return NotFound("Products not found");
-            }
-            return Ok(product);
-        }
 
         [HttpPost("compare")]
         public async Task<ActionResult<IEnumerable<ProductDTO>>> CompareProducts([FromBody] List<int> productIds)
