@@ -8,6 +8,8 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using StockApp.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -79,6 +81,12 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanManageProducts", policy =>
+        policy.Requirements.Add(new ClaimsAuthorizationRequirement("Permission", "CanManageProducts")));
+});
+builder.Services.AddSingleton<IAuthorizationHandler, ClaimsAuthorizationHandler>();
 
 builder.Services.AddCors(options =>
 {
